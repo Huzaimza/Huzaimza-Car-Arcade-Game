@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D Car Arcade Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Game UI -->
+        <div class="game-ui">
+            <div class="score-panel">
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="speed">Speed: <span id="speed">0</span> km/h</div>
+                <div class="distance">Distance: <span id="distance">0</span>m</div>
+                <div class="combo">Combo: <span id="combo">0</span>x</div>
+                <div class="coins">Coins: <span id="coins">0</span></div>
+            </div>
+
+            <div class="mini-map" id="miniMap">
+                <div class="mini-car" id="miniCar"></div>
+                <div class="mini-obstacles" id="miniObstacles"></div>
+            </div>
+
+            <div class="power-up-bar" id="powerUpBar">
+                <div class="active-powerups" id="activePowerups"></div>
+            </div>
+
+            <div class="achievement-popup" id="achievementPopup">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-text" id="achievementText"></div>
+            </div>
+            
+            <div class="game-over-screen" id="gameOverScreen">
+                <h2>Game Over!</h2>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <p>Distance: <span id="finalDistance">0</span>m</p>
+                <p>Best Combo: <span id="bestCombo">0</span>x</p>
+                <p>Coins Collected: <span id="finalCoins">0</span></p>
+                <div class="achievements-summary" id="achievementsSummary"></div>
+                <button id="restartBtn">Restart Game</button>
+            </div>
+            
+            <div class="start-screen" id="startScreen">
+                <h1>🏎️ 3D Car Arcade Rush</h1>
+                <p>🎮 Use ARROW KEYS or WASD to control your car</p>
+                <p>📱 On mobile: Use touch controls</p>
+                <p>⚡ Collect power-ups and avoid obstacles!</p>
+                <p>🪙 Collect coins for extra points</p>
+                <button id="startBtn">🚀 Start Game</button>
+                <button id="settingsBtn">⚙️ Settings</button>
+            </div>
+
+            <div class="settings-screen hidden" id="settingsScreen">
+                <h2>⚙️ Settings</h2>
+                <div class="setting-item">
+                    <label>🔊 Sound Effects</label>
+                    <input type="checkbox" id="soundToggle" checked>
+                </div>
+                <div class="setting-item">
+                    <label>🎵 Music</label>
+                    <input type="checkbox" id="musicToggle" checked>
+                </div>
+                <div class="setting-item">
+                    <label>⚡ Particle Effects</label>
+                    <select id="particleQuality">
+                        <option value="high">High</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <button id="backBtn">← Back</button>
+            </div>
+        </div>
+
+        <!-- 3D Game World -->
+        <div class="game-world" id="gameWorld">
+            <!-- Background Environment -->
+            <div class="environment" id="environment">
+                <div class="clouds" id="clouds"></div>
+                <div class="buildings-left" id="buildingsLeft"></div>
+                <div class="buildings-right" id="buildingsRight"></div>
+                <div class="trees-left" id="treesLeft"></div>
+                <div class="trees-right" id="treesRight"></div>
+                <div class="mountains" id="mountains"></div>
+            </div>
+
+            <!-- Road -->
+            <div class="road" id="road">
+                <div class="road-segment" style="transform: translateZ(0px)"></div>
+                <div class="road-segment" style="transform: translateZ(-200px)"></div>
+                <div class="road-segment" style="transform: translateZ(-400px)"></div>
+                <div class="road-segment" style="transform: translateZ(-600px)"></div>
+                <div class="road-segment" style="transform: translateZ(-800px)"></div>
+                <div class="road-segment" style="transform: translateZ(-1000px)"></div>
+                <div class="road-segment" style="transform: translateZ(-1200px)"></div>
+                <div class="road-segment" style="transform: translateZ(-1400px)"></div>
+                <div class="road-segment" style="transform: translateZ(-1600px)"></div>
+                <div class="road-segment" style="transform: translateZ(-1800px)"></div>
+            </div>
+
+            <!-- Lane Markers -->
+            <div class="lane-markers" id="laneMarkers"></div>
+
+            <!-- Player Car -->
+            <div class="player-car" id="playerCar">
+                <div class="car-body"></div>
+                <div class="car-windshield"></div>
+                <div class="car-wheel wheel-fl"></div>
+                <div class="car-wheel wheel-fr"></div>
+                <div class="car-wheel wheel-bl"></div>
+                <div class="car-wheel wheel-br"></div>
+                <div class="car-exhaust-left"></div>
+                <div class="car-exhaust-right"></div>
+                <div class="car-headlights"></div>
+                <div class="boost-trail" id="boostTrail"></div>
+                <div class="shield-effect" id="shieldEffect"></div>
+            </div>
+
+            <!-- Obstacles Container -->
+            <div class="obstacles" id="obstacles"></div>
+
+            <!-- Power-ups Container -->
+            <div class="powerups" id="powerups"></div>
+
+            <!-- Particle Effects -->
+            <div class="particles" id="particles"></div>
+
+            <!-- Screen Effects -->
+            <div class="screen-effects" id="screenEffects">
+                <div class="explosion-effect" id="explosionEffect"></div>
+                <div class="screen-shake" id="screenShake"></div>
+            </div>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls" id="mobileControls">
+            <div class="control-left">
+                <button class="control-btn" id="leftBtn">
+                    <span>◀</span>
+                </button>
+            </div>
+            <div class="control-center">
+                <button class="control-btn" id="brakeBtn">
+                    <span>🛑</span>
+                </button>
+                <button class="control-btn" id="boostBtn">
+                    <span>⚡</span>
+                </button>
+            </div>
+            <div class="control-right">
+                <button class="control-btn" id="rightBtn">
+                    <span>▶</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
